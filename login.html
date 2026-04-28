@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="page-wrapper">
+    <div class="hero-panel">
+      <div class="hero-badge">School Bus Booking System</div>
+      <h1 class="hero-title">Secure access to your transportation dashboard</h1>
+      <p class="hero-text">
+        Sign in to manage students, review bookings, and continue the school transportation journey
+        through a clean and modern interface designed for speed and clarity.
+      </p>
+    </div>
+
+    <div class="glass-card">
+      <h2 class="card-title">Login</h2>
+      <p class="card-subtitle">Enter your account details to continue.</p>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="Enter your email" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter your password" />
+      </div>
+
+      <button onclick="login()">Sign In</button>
+
+      <div id="result" class="result-box" style="display:none;"></div>
+
+      <div class="secondary-link">
+        Need an account? <a href="index.html">Create one</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function login() {
+      fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const resultBox = document.getElementById('result');
+        resultBox.style.display = 'block';
+
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          resultBox.innerText = 'Login successful. Redirecting to booking page...';
+          setTimeout(() => {
+            window.location.href = 'booking.html';
+          }, 900);
+        } else {
+          resultBox.innerText = 'Login failed. Please check your email and password.';
+        }
+      })
+      .catch(() => {
+        const resultBox = document.getElementById('result');
+        resultBox.style.display = 'block';
+        resultBox.innerText = 'Unable to connect to the server.';
+      });
+    }
+  </script>
+
+</body>
+</html>

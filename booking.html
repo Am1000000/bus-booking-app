@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Booking</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="page-wrapper">
+  <div class="hero-panel">
+    <h2>Create Booking</h2>
+  </div>
+
+  <div class="glass-card">
+
+    <div class="form-group">
+      <label>Student ID</label>
+      <input id="student_id" />
+    </div>
+
+    <div class="form-group">
+      <label>Plan ID</label>
+      <input id="plan_id" />
+    </div>
+
+    <div class="form-group">
+      <label>Bus ID</label>
+      <input id="bus_id" />
+    </div>
+
+    <div class="form-group">
+      <label>Route ID</label>
+      <input id="route_id" />
+    </div>
+
+    <!-- ✅ dropdown schools -->
+    <div class="form-group">
+      <label>School</label>
+      <select id="school_id"></select>
+    </div>
+
+    <!-- ✅ dropdown stations -->
+    <div class="form-group">
+      <label>Station</label>
+      <select id="station_id"></select>
+    </div>
+
+    <button onclick="createBooking()">Create Booking</button>
+
+  </div>
+</div>
+
+<script>
+function loadSchools() {
+  fetch('http://localhost:3000/schools')
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById('school_id');
+      data.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s.school_id;
+        option.textContent = s.school_name;
+        select.appendChild(option);
+      });
+    });
+}
+
+function loadStations() {
+  fetch('http://localhost:3000/stations')
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById('station_id');
+      data.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s.station_id;
+        option.textContent = s.station_name;
+        select.appendChild(option);
+      });
+    });
+}
+
+loadSchools();
+loadStations();
+
+function createBooking() {
+  fetch('http://localhost:3000/bookings', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    },
+    body: JSON.stringify({
+      student_id: document.getElementById('student_id').value,
+      plan_id: document.getElementById('plan_id').value,
+      bus_id: document.getElementById('bus_id').value,
+      route_id: document.getElementById('route_id').value,
+      school_id: document.getElementById('school_id').value,
+      station_id: document.getElementById('station_id').value,
+      status: "confirmed",
+      date: new Date().toISOString().split('T')[0]
+    })
+  })
+  .then(res => res.text())
+  .then(data => alert(data));
+}
+</script>
+
+</body>
+</html>

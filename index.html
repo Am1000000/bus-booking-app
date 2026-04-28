@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="page-wrapper">
+    <div class="hero-panel">
+      <div class="hero-badge">School Transportation Platform</div>
+      <h1 class="hero-title">Create your account and start managing bookings</h1>
+      <p class="hero-text">
+        Register a parent account to access booking services, manage student transportation,
+        and connect seamlessly with the school bus system.
+      </p>
+    </div>
+
+    <div class="glass-card">
+      <h2 class="card-title">Register</h2>
+      <p class="card-subtitle">Create a new account to continue.</p>
+
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input id="name" placeholder="Enter full name" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="Enter your email" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter your password" />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input id="phone" placeholder="Enter your phone number" />
+      </div>
+
+      <button onclick="register()">Create Account</button>
+
+      <div id="result" class="result-box" style="display:none;"></div>
+
+      <div class="secondary-link">
+        Already have an account? <a href="login.html">Login</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function register() {
+      fetch('http://localhost:3000/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+          phone: document.getElementById('phone').value
+        })
+      })
+      .then(res => res.text())
+      .then(data => {
+        const resultBox = document.getElementById('result');
+        resultBox.style.display = 'block';
+        resultBox.innerText = data;
+      })
+      .catch(() => {
+        const resultBox = document.getElementById('result');
+        resultBox.style.display = 'block';
+        resultBox.innerText = 'Unable to connect to the server.';
+      });
+    }
+  </script>
+
+</body>
+</html>
